@@ -16,16 +16,16 @@
         makeFlags = kernel.makeFlags ++ [
           "KERNEL_RELEASE=${kernel.modDirVersion}"
           "KERNEL_DIR=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
-          "INSTALL_MOD_PATH=$(out)"
+          "INSTALL_MOD_DIR=extra"
         ];
         buildPhase = ''
           runHook preBuild
-          make $makeFlags -C ${kernel.dev}/lib/modules/${kernel.modDirVersion}/build M=$(pwd) modules
+          make ''${makeFlagsArray[@]} -C ${kernel.dev}/lib/modules/${kernel.modDirVersion}/build M=$(pwd) modules
           runHook postBuild
         '';
         installPhase = ''
           runHook preInstall
-          make $makeFlags -C ${kernel.dev}/lib/modules/${kernel.modDirVersion}/build M=$(pwd) INSTALL_MOD_PATH=$out INSTALL_MOD_DIR=extra modules_install
+          make ''${makeFlagsArray[@]} -C ${kernel.dev}/lib/modules/${kernel.modDirVersion}/build M=$(pwd) INSTALL_MOD_PATH=$out modules_install
           runHook postInstall
         '';
         meta = with pkgs.lib; {
